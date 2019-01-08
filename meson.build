@@ -11,7 +11,7 @@ add_project_arguments(
 
 compiler = meson.get_compiler('cpp')
 lz = compiler.find_library('z')
-pthread = dependency('threads')
+pthreads = dependency('threads')
 
 inc = include_directories('.')
 
@@ -21,6 +21,10 @@ glucose_lib = library('glucose', [
 	'./core/Solver.cc',
 	'./simp/SimpSolver.cc'],
 	dependencies: lz)
+glocose_dep = declare_dependency(
+	include_directories: include_directories('.', is_system: true),
+	link_with: glucose_lib,
+	dependencies: lz)
 syrup_lib = library('glucose-syrup', [
 	'./parallel/ClausesBuffer.cc',
 	'./parallel/MultiSolvers.cc',
@@ -29,12 +33,15 @@ syrup_lib = library('glucose-syrup', [
 	'./parallel/ParallelSolver.cc',
 	'./parallel/SolverCompanion.cc'],
 	link_with: glucose_lib,
-	dependencies: pthread)
+	dependencies: pthreads)
+syrup_dep = declare_dependency(
+	include_directories: include_directories('.', is_system: true),
+	link_with: syrup_lib,
+	dependencies: [syrup_dep, pthreads])
 glucose_bin = executable('glucose', './simp/Main.cc',
 	link_with: glucose_lib,
 	dependencies: lz)
 syrup_bin = executable('glucose-syrup', './parallel/Main.cc',
 	link_with: [glucose_lib, syrup_lib],
-	dependencies: [lz, pthread])
-
+	dependencies: [lz, pthreads])
 
