@@ -21,7 +21,7 @@ glucose_lib = library('glucose', [
 	'./core/Solver.cc',
 	'./simp/SimpSolver.cc'],
 	dependencies: lz)
-glocose_dep = declare_dependency(
+glucose_dep = declare_dependency(
 	include_directories: include_directories('.', is_system: true),
 	link_with: glucose_lib,
 	dependencies: lz)
@@ -37,7 +37,7 @@ syrup_lib = library('glucose-syrup', [
 syrup_dep = declare_dependency(
 	include_directories: include_directories('.', is_system: true),
 	link_with: syrup_lib,
-	dependencies: [syrup_dep, pthreads])
+	dependencies: [glucose_dep, pthreads])
 glucose_bin = executable('glucose', './simp/Main.cc',
 	link_with: glucose_lib,
 	dependencies: lz)
